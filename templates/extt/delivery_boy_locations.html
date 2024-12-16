@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Boy Locations</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
+
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Delivery Boy Locations</h1>
+
+    <!-- Table to display delivery boy details -->
+    <table>
+        <thead>
+            <tr>
+                <th>Delivery Boy</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Last Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in delivery_boy_locations %}
+                <tr>
+                    <td>{{ location.delivery_boy.username }}</td>
+                    <td>{{ location.latitude }}</td>
+                    <td>{{ location.longitude }}</td>
+                    <td>{{ location.timestamp|date:"d M Y H:i" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Map -->
+    <div id="map"></div>
+
+    <script>
+        let map;
+        let markers = [];
+
+        function initMap() {
+            // Initial map setup
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 5,
+                center: { lat: 20.5937, lng: 78.9629 }, // Center of India
+            });
+
+            // Add markers for each delivery boy's location
+            const locations = [
+                {% for location in delivery_boy_locations %}
+                    {
+                        name: "{{ location.delivery_boy.username }}",
+                        lat: {{ location.latitude }},
+                        lng: {{ location.longitude }}
+                    },
+                {% endfor %}
+            ];
+
+            locations.forEach(loc => {
+                const marker = new google.maps.Marker({
+                    position: { lat: loc.lat, lng: loc.lng },
+                    map: map,
+                    title: loc.name
+                });
+
+                // Optional: Info window
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<strong>${loc.name}</strong><br>Latitude: ${loc.lat}<br>Longitude: ${loc.lng}`,
+                });
+
+                marker.addListener('click', () => {
+                    infoWindow.open(map, marker);
+                });
+
+                markers.push(marker);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assigned Orders</title>
+    <link rel="stylesheet" href="{% static 'extt/css/assign.css' %}">
+    <link rel="stylesheet" href="{% static 'extt/css/orders_list.css' %}">
+    <style>
+        .logo {
+            display: flex;
+            align-items: center; 
+        }
+
+        .logo img {
+            margin-right: 10px; 
+        }
+
+        .logo h3 {
+            margin: 0; 
+            color: #fff; 
+        }
+
+        .checkout-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .checkout-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="{% static 'extt/images/logo2.gif' %}" alt="Logo" style="width: 40px; height: auto;">
+                <a><h3>MEDMART</h3></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'delivery_boy_home' %}">Home</a></li>
+           
+        </ul>
+    </nav>
+</header><br>
+    <div class="container">
+        <h1><center>Assigned Orders</center></h1>
+        <br>
+
+        {% if orders %}
+            {% for order in orders %}
+                <div class="order-container">
+                    <h3>Order ID: {{ order.id }}</h3>
+                    <p><strong>Customer:</strong> {{ order.user.username }}</p>
+                    <p><strong>Shipping Address:</strong> {{ order.address }}</p>
+                    <p><strong>Date:</strong> {{ order.created_at|date:"d M Y" }}</p>
+                    <p><strong>Status:</strong> {{ order.status }}</p>
+
+                    <h4>Ordered Products:</h4>
+                    {% for item in order.order_items.all %}
+                        <div class="product-item">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <img src="{% static 'extt/images/default-image.jpg' %}" alt="No image available">
+                            {% endif %}
+                            <div class="product-info">
+                                <p><strong>Product:</strong> {{ item.product.name }}</p>
+                                <p><strong>Quantity:</strong> {{ item.quantity }}</p>
+                                <p><strong>Price:</strong> ₹{{ item.total_price }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Status Update Form -->
+                    <form method="post" action="{% url 'assigned_orders_list' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <label for="status">Update Status:</label>
+                        <select name="status" id="status">
+                            <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+                            <option value="shipped" {% if order.status == "shipped" %}selected{% endif %}>shipped</option>
+                            <option value="Out for Delivery" {% if order.status == "Out for Delivery" %}selected{% endif %}>Out for Delivery</option>
+                            <option value="Delivered" {% if order.status == "Delivered" %}selected{% endif %}>Delivered</option>
+                        </select>
+                        <button type="submit" class="checkout-btn">Update</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No orders assigned yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

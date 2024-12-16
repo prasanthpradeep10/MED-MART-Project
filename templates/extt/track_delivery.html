@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>MedMart</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+  <!-- font awesome style -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="{% static 'extt/css/bootstrap.css' %}" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700|Roboto:400,700&display=swap" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'extt/css/style.css' %}" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="{% static 'extt/css/responsive.css' %}" rel="stylesheet" />
+ 
+  <link rel="stylesheet" href="{% static 'extt/css/track_delivery.css' %}">
+
+</head>
+<body>
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      
+        <div class="top_contact-container">
+          <div class="tel_container">
+          </div>
+        </div>
+      
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
+          <a class="navbar-brand" href="{% url 'user_home' %}">
+            <img src="{% static 'extt/images/logo2.gif' %}" alt="">
+            <span>
+              MEDMART
+            </span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
+              <ul class="navbar-nav  ">
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'user_home' %}"> Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'user_profile' username=request.user.username %}">Profile </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'user_category' %}"> category</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'cart' %}">
+                      <img src="{% static 'extt/images/cart.png' %}" alt="Cart" style="width: 23px; height: auto;">
+                      Cart
+                      {% if cart_items_count > 0 %}
+                          <span class="badge badge-pill badge-danger">{{ cart_items_count }}</span>
+                      {% endif %}
+                  </a>
+              </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'order_history' %}"><img src="{% static 'extt/images/orders.png' %}" alt="Logo" style="width: 23px; height: auto;">Orders</a>
+              </li>
+              </ul>
+              <form class="form-inline" method="GET" action="{% url 'search' %}">
+                <input type="search" name="query" id="search-input" placeholder="Search" class="form-control">
+                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit"></button>
+            </form>
+            
+            <!-- Suggestions will appear here -->
+            <div id="suggestions-box"></div> 
+            
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+                $(document).ready(function() {
+                    $('#search-input').on('keyup', function() {
+                        let query = $(this).val();
+            
+                        if (query.length > 0) {
+                            $.ajax({
+                                url: '{% url "suggestion" %}',
+                                method: 'GET',
+                                data: {
+                                    'query': query
+                                },
+                                success: function(data) {
+                                    $('#suggestions-box').html(data);
+                                }
+                            });
+                        } else {
+                            $('#suggestions-box').html('');
+                        }
+                    });
+            
+                    // Hide suggestions when clicking outside
+                    $(document).click(function(e) {
+                        if (!$(e.target).closest('#search-input, #suggestions-box').length) {
+                            $('#suggestions-box').html('');
+                        }
+                    });
+                });
+            </script>
+        
+            <div class="login_btn-contanier ml-0 ml-lg-5">
+                <a class="nav-link" href="{% url 'logout' %}">
+                  <img src="{% static 'extt/images/user.png' %}" alt="">
+                  <span>
+                    Logout
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </nav>
+      </div>
+    </header><br>   
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h3>Track Your Delivery</h3>
+            </div>
+            <div class="card-body">
+                 <!-- Items Section -->
+                 <h4>Order #{{ order.id }}</h4>
+                 <div class="order-items">
+                     {% for item in order.order_items.all %}
+                         <div class="order-details">
+                             {% if item.product.image %}
+                                 <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                             {% else %}
+                                 <img src="{% static 'extt/images/placeholder.png' %}" alt="No image available">
+                             {% endif %}
+                             <div class="order-info">
+                                 <p><strong>{{ item.product.name }}</strong></p>
+                                 <p>Quantity: {{ item.quantity }}</p>
+                                 <p>Price: ₹{{ item.total_price }}</p>
+                             </div>
+                         </div>
+                     {% endfor %}
+                 </div>
+
+                <div class="delivery-details">
+                    <p><strong>Order Address:</strong> {{ order.address }}</p>
+                    <p><strong>Delivery Boy:</strong> {{ delivery_boy.username }}</p>
+
+                    <!-- Delivery Boy Image -->
+                    <div class="delivery-boy-image">
+                        <img src="{% static 'extt/images/Delivery Boy.gif' %}" alt="Delivery Boy">
+                    </div>
+
+                    <!-- Display Delivery Boy Location -->
+                    {% if delivery_boy_status %}
+                        <p><strong>Delivery Boy Location:</strong> {{ delivery_boy_status.location_name }}</p>
+                    {% else %}
+                        <p><strong>Delivery Boy Location:</strong> Not available</p>
+                    {% endif %}
+                </div>
+
+                <!-- Live Distance Section -->
+                <p class="live-distance"><strong>Live Distance:</strong> <span id="distance">Calculating...</span></p>
+
+                <a href="{% url 'order_history' %}" class="checkout-btn">Back</a>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        // Function to fetch live distance
+        function fetchLiveDistance(orderId) {
+            fetch(`/api/live-distance/${orderId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.distance) {
+                        document.getElementById('distance').innerText = `${data.distance.toFixed(2)} km`;
+                    } else {
+                        document.getElementById('distance').innerText = data.error || 'Error fetching distance.';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Start updating live distance
+        const orderId = {{ order.id }}; // Replace with the dynamic order ID passed from the backend
+        setInterval(() => fetchLiveDistance(orderId), 5000); // Update every 5 seconds
+    </script>
+
+     <!-- info section -->
+   <section class="info_section layout_padding2">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="info_contact">
+            <h4>
+              Contact
+            </h4>
+            <div class="box">
+              <div class="img-box">
+                <img src="{% static 'extt/images/telephone-symbol-button.png' %}" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  +01 123567894
+                </h6>
+              </div>
+            </div>
+            <div class="box">
+              <div class="img-box">
+                <img src="{% static 'extt/images/email.png' %}" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  imcodeman47@gmail.com
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_menu">
+            <h4>
+              Menu
+            </h4>
+            <ul class="navbar-nav  ">
+              <li class="nav-item active">
+                <a class="nav-link" href="{% url 'user_home' %}">Home <span class="sr-only">(current)</span></a>
+              </li>
+             
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'user_category' %}"> Category</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'order_history' %}"> Orders</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="container-fluid footer_section">
+    <p>
+      &copy; CodeMan
+    </p>
+  </section>
+    
+</body>
+</html>
+
+
+
+

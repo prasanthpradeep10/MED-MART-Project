@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="{% static 'extt/css/category.css' %}">
+    <style>
+        .logo {
+            display: flex;
+            align-items: center; 
+        }
+
+        .logo img {
+            margin-right: 10px; 
+        }
+
+        .logo h3 {
+            margin: 0; 
+            color: #fff; 
+        }
+
+        .checkout-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .checkout-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="{% static 'extt/images/logo2.gif' %}" alt="Logo" style="width: 40px; height: auto;">
+                <a><h3>MEDMART</h3></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{% url 'user_home' %}">Home</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="{% url 'user_category' %}">Category</a></li>
+                
+            </ul>
+        </nav>
+    </header><br>
+    <h1>Search Results for "{{ query }}"</h1>
+    
+    {% if products %}
+        <ul>
+            <section class="categories">
+                {% for product in products %}
+                <div class=" category" id="category1">
+                   <img src="{{ product.image.url }}" alt="{{product.name}}">
+                   <h2>{{ product.name }}</h2>
+                   <p>{{ product.description }}</p>
+                   <p>Price: ₹{{ product.price }}</p>
+                   <a href="{% url 'user_reg' %}" class="button button1">Buy</a> 
+                </div>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No products found for your search.</p>
+    {% endif %}
+
+</body>
+</html>    

@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Boy Home</title>
+    <link rel="stylesheet" href="{% static 'extt/css/category.css' %}">
+    <link rel="stylesheet" href="{% static 'extt/css/delivery_boy_home.css' %}"> <!-- Link to external stylesheet -->
+    <style>
+        .logo {
+            display: flex;
+            align-items: center; 
+        }
+
+        .logo img {
+            margin-right: 10px; 
+        }
+
+        .logo h3 {
+            margin: 0; 
+            color: #fff; 
+        }
+
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn.out {
+            background-color: #FF6347;
+        }
+
+        .btn.out:hover {
+            background-color: #FF4500;
+        }
+
+        .location-btn {
+            background-color: #28a745;
+        }
+
+        .location-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="{% static 'extt/images/logo2.gif' %}" alt="Logo" style="width: 40px; height: auto;">
+                <a><h3>MEDMART</h3></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{% url 'assigned_orders_list' %}">ASSIGN ORDERS</a></li>
+                <li><a href="{% url 'logout' %}"><img src="{% static 'extt/images/user.png' %}" alt="Logo"> LOGOUT</a></li>
+            </ul>
+        </nav>
+    </header>
+    <br><br>
+    <div class="container">
+        <h1>Welcome, {{ user.username }}</h1>
+        <br>
+        <h2>Your Current Status: <span class="status">{{ delivery_boy_status.status }}</span></h2>
+
+        <!-- Form to change status to "In" -->
+        <form method="post" action="{% url 'update_status' 'In' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn">Set Status to 'In'</button>
+        </form>
+
+        <!-- Form to change status to "Out" -->
+        <form method="post" action="{% url 'update_status' 'Out' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn out">Set Status to 'Out'</button>
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        </form>
+
+        <!-- Button to update location -->
+        <h1>Location Track</h1>
+        <div id="map"></div>
+
+        <button class="btn location-btn" onclick="updateLocation(event)">Update Location</button>
+    </div>
+
+    <script>
+        // Function to update the location
+        function updateLocation() {
+            // Get the current position using the browser's Geolocation API
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const status = 'In';  // Set the status to 'In' for delivery boys who are working
+    
+                    // Get CSRF token for secure POST request
+                    var csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+    
+                    // Send the location to the server using a POST request
+                    fetch("/update-delivery-boy-location/", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify({
+                            'latitude': latitude,
+                            'longitude': longitude,
+                            'status': status
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Display an alert with either the success message or fallback message
+                        // alert(data.message || 'Location updated successfully');
+                        
+                        // Log the address for debugging (if available)
+                        if (data.address) {
+                            console.log("Location address:", data.address);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to update location. Please try again.');
+                    });
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+    
+        // Set interval to update the location every 60 seconds (60000 milliseconds)
+        setInterval(updateLocation, 5000); // 60000 ms = 1 minute
+    </script>
+    
+    
+</body>
+</html>
+
+
+
+
+
+

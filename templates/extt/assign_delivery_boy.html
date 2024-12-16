@@ -1,0 +1,186 @@
+
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>MEDMART</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+  <!-- font awesome style -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="{% static 'extt/css/bootstrap.css' %}" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700|Roboto:400,700&display=swap" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'extt/css/style.css' %}" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="{% static 'extt/css/responsive.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'extt/css/assign_delivery_boy.css' %}">
+
+</head>
+
+<body>
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <br>
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
+          <a class="navbar-brand" href="{% url 'admin_home' %}">
+            <img src="{% static 'extt/images/logo2.gif' %}" alt="">
+            <span>
+              MEDMART
+            </span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
+              <ul class="navbar-nav  ">
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'admin_home' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'category' %}"> Category </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'orders_list' %}">Orders</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'delivery_boy_details' %}">Tracking </a>
+                </li>
+              </ul>
+              <form class="form-inline" method="GET" action="{% url 'search' %}">
+                <input type="search" name="query" id="search-input" placeholder="Search" class="form-control">
+                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit"></button>
+            </form>
+
+               <!-- Suggestions will appear here -->
+            <div id="suggestions-box"></div> 
+            
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+                $(document).ready(function() {
+                    $('#search-input').on('keyup', function() {
+                        let query = $(this).val();
+            
+                        if (query.length > 0) {
+                            $.ajax({
+                                url: '{% url "suggestion" %}',
+                                method: 'GET',
+                                data: {
+                                    'query': query
+                                },
+                                success: function(data) {
+                                    $('#suggestions-box').html(data);
+                                }
+                            });
+                        } else {
+                            $('#suggestions-box').html('');
+                        }
+                    });
+            
+                    // Hide suggestions when clicking outside
+                    $(document).click(function(e) {
+                        if (!$(e.target).closest('#search-input, #suggestions-box').length) {
+                            $('#suggestions-box').html('');
+                        }
+                    });
+                });
+            </script>
+              <div class="login_btn-contanier ml-0 ml-lg-5">
+                <a class="nav-link" href="{% url 'logout' %}">
+                  <img src="{% static 'extt/images/user.png' %}" alt="">
+                  <span>
+                    Logout
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </nav>
+      </div>
+    </header>   
+
+<div class="container">
+  <h1>Assign Delivery Boy to Order #{{ order.id }}</h1>
+
+  <div class="order-details">
+      <p><strong>Customer:</strong> {{ order.user.username }}</p>
+      <p><strong>Shipping Address:</strong> {{ order.address }}</p>
+      <p><strong>Total Price:</strong> ₹{{ order.total_price }}</p>
+      <p><strong>Date:</strong> {{ order.created_at|date:"d M Y" }}</p>
+      <p><strong>Status:</strong> {{ order.status }}</p>
+  
+      <h4>Ordered Products:</h4>
+      {% for item in order.order_items.all %}
+      <div class="product-item">
+          {% if item.product.image %}
+              <img src="{{ item.product.image.url }}" style="width: 70px; height: auto;" alt="{{ item.product.name }}">
+          {% else %}
+              <img src="{% static 'extt/images/default-image.jpg' %}" alt="No image available">
+          {% endif %}
+          <div class="product-info">
+              <p><strong>Product:</strong> {{ item.product.name }}</p>
+              <p><strong>Quantity:</strong> {{ item.quantity }}</p>
+              <p><strong>Price:</strong> ₹{{ item.total_price }}</p>
+          </div>
+      </div>
+      {% endfor %}  
+  </div>
+
+  {% if order.delivery_boy_update %}
+      <p><strong>Assigned Delivery Boy:</strong> {{ order.delivery_boy_update.username }}</p>
+      <p>This order has already been assigned to {{ order.delivery_boy_update.username }} and cannot be reassigned.</p>
+  {% else %}
+      <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <br>
+          <button type="submit">Assign Delivery Boy</button>
+      </form>
+  {% endif %}
+</div>
+
+
+
+
+
+
+
+  <!-- footer section -->
+  <section class="container-fluid footer_section">
+    <p>
+      &copy; CodeMan
+      
+    </p>
+  </section>
+
+</body>
+</html>
+
+

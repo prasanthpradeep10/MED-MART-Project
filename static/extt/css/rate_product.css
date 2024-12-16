@@ -1,0 +1,42 @@
+.rating {
+    display: flex;
+    direction: row-reverse;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.rating input {
+    display: none;
+}
+.rating label {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+.rating input:checked ~ label {
+    color: #ffcc00; /* Yellow color for selected stars */
+}
+.rating label:hover,
+.rating label:hover ~ label {
+    color: #ffcc00; /* Yellow color on hover */
+}
+.product-image {
+    display: block;
+    margin: 0 auto 20px;
+    width: 250px; /* Set desired width */
+    height: auto; /* Maintain aspect ratio */
+}
+.submit-button {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    background-color: #28a745; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+.submit-button:hover {
+    background-color: #218838; 
+}

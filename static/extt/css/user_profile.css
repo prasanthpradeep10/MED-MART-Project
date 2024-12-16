@@ -1,0 +1,89 @@
+body{
+  background-image: linear-gradient(45deg, #10e7f4, #ebebef);
+}
+.uf-contact-form-01 {
+max-width: 900px;
+}
+@media (min-width: 576px){
+.uf-contact-form-01 {
+min-height: 100vh;
+align-content: center;
+} 
+}
+.uf-img-contact-form-01{
+max-width: 100%;
+animation: uf-animation 4s ease-in-out 1s infinite alternate;
+position: relative;
+}
+.uf-ct-01-text-primary{
+color: #040404;
+}
+.uf-ct-01-btn-primary{
+background-color: #151717;
+color: #fff;
+}
+.uf-ct-01-btn-primary:hover{
+background-color: #10e7f4;
+color: #fff;
+}
+
+@keyframes uf-animation {
+0%   {top:0px;}
+50%  {top:-30px;}
+100% {top:0px;}
+}
+.form-control:focus {
+border-color: #a979ff;
+box-shadow: 0 0 0 .25rem rgb(103 58 183 / 21%);
+}
+
+.address-box {
+  background-color: #f9f9f9; /* Light background color */
+  border: 1px solid #ddd;    /* Light border around the box */
+  border-radius: 8px;        /* Rounded corners */
+}
+
+.address-details {
+  flex-grow: 1;              /* Allow the address to take up remaining space */
+}
+.user-info-box {
+  border: 1px solid #ccc;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+
+.address-box a {
+  display: inline-block;
+  padding: 8px 15px;
+  background-color: #10e7f4;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.address-box a:hover {
+  background-color: #1cc4f1;
+}      
+
+.checkout-btn {
+  display: inline-block;
+  padding: 8px 15px;
+  background-color: #10e7f4;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.checkout-btn:hover {
+  background-color: #1cc4f1;
+ 
+}
+
+
+
+  
+  

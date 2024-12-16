@@ -1,0 +1,254 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>MedMart</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+  <!-- font awesome style -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="{% static 'extt/css/bootstrap.css' %}" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700|Roboto:400,700&display=swap" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'extt/css/style.css' %}" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="{% static 'extt/css/responsive.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="{% static 'extt/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'extt/css/user_profile.css' %}">
+  <style>
+    .address-box {
+  background-color: #f9f9f9; /* Light background color */
+  border: 1px solid #ddd;    /* Light border around the box */
+  border-radius: 8px;        /* Rounded corners */
+}
+
+.address-details {
+  flex-grow: 1;              /* Allow the address to take up remaining space */
+}
+.user-info-box {
+  border: 1px solid #ccc;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+
+.address-box a {
+  display: inline-block;
+  padding: 8px 15px;
+  background-color: #10e7f4;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.address-box a:hover {
+  background-color: #1cc4f1;
+}      
+
+.checkout-btn {
+  display: inline-block;
+  padding: 8px 15px;
+  background-color: #10e7f4;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.checkout-btn:hover {
+  background-color: #1cc4f1;
+ 
+}
+  </style>
+</head>
+<body>
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container">
+        <div class="top_contact-container">
+          <div class="tel_container">
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
+          <a class="navbar-brand" href="{% url 'user_home' %}">
+            <img src="{% static 'extt/images/logo2.gif' %}" alt="">
+            <span>
+              MEDMART
+            </span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
+              <ul class="navbar-nav  ">
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'user_home' %}"> Home <span class="sr-only">(current)</span></a>
+                </li>
+                
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'user_category' %}"> category</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'cart' %}">
+                      <img src="{% static 'extt/images/cart.png' %}" alt="Cart" style="width: 23px; height: auto;">
+                      Cart
+                      {% if cart_items_count > 0 %}
+                          <span class="badge badge-pill badge-danger">{{ cart_items_count }}</span>
+                      {% endif %}
+                  </a>
+              </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'order_history' %}"><img src="{% static 'extt/images/orders.png' %}" alt="Logo" style="width: 23px; height: auto;">Orders</a>
+              </li>
+              </ul>
+              <form class="form-inline" method="GET" action="{% url 'search' %}">
+                <input type="search" name="query" id="search-input" placeholder="Search" class="form-control">
+                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit"></button>
+            </form>
+            
+            <!-- Suggestions will appear here -->
+            <div id="suggestions-box"></div> 
+            
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+                $(document).ready(function() {
+                    $('#search-input').on('keyup', function() {
+                        let query = $(this).val();
+            
+                        if (query.length > 0) {
+                            $.ajax({
+                                url: '{% url "suggestion" %}',
+                                method: 'GET',
+                                data: {
+                                    'query': query
+                                },
+                                success: function(data) {
+                                    $('#suggestions-box').html(data);
+                                }
+                            });
+                        } else {
+                            $('#suggestions-box').html('');
+                        }
+                    });
+            
+                    // Hide suggestions when clicking outside
+                    $(document).click(function(e) {
+                        if (!$(e.target).closest('#search-input, #suggestions-box').length) {
+                            $('#suggestions-box').html('');
+                        }
+                    });
+                });
+            </script>
+            
+
+            
+
+            <div class="login_btn-contanier ml-0 ml-lg-5">
+                <a class="nav-link" href="{% url 'logout' %}">
+                  <img src="{% static 'extt/images/user.png' %}" alt="">
+                  <span>
+                    Logout
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </nav>
+      </div>
+    </header><br>
+   
+
+    <section class="uf-contact-form-01 mx-auto">
+        <div class="container">
+            <div class="row justify-content-center bg-white rounded-4 shadow py-5 gx-5 px-lg-5">
+                <div class="col-md-6 text-center">
+                    <h2 class="uf-ct-01-text-primary text-uppercase fw-bold">Profile</h2>
+                    <center><img src="{% static 'extt/images/userpr2.png' %}" alt="" style="width: 200px; height: auto; " class="uf-img-contact-form-01 pt-4 d-md-block d-none">
+                </div>
+
+                <!-- Profile Details -->
+                
+                    <h3 class="uf-ct-01-text-primary">Account Details</h3>
+                    <div class="user-info-box">
+                        <p>Username: <strong>{{ user.username }}</strong>
+                            <a href="{% url 'update_username' %}" style="margin-left: 10px;" class="checkout-btn">Edit</a>
+                        </p>
+                        
+                        <p>Email:  <strong>{{ user.email }}</strong>
+                            <a href="{% url 'update_email' %}" style="margin-left: 10px;" class="checkout-btn">Edit</a>
+                        </p>
+                    </div>
+                    <br>
+                
+                        <!-- Addresses Section -->
+                        <h3 class="uf-ct-01-text-primary">Address</h3>
+                        {% if addresses %}
+                            <div class="address-list">
+                                {% for address in addresses %}
+                                    <div class="address-box d-flex align-items-center mb-4 p-4 border rounded shadow-sm">
+                                        <div class="address-details">
+                                            <p><strong>Address:</strong> {{ address.address_line }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}</p>
+                                            {% if address.is_default %}
+                                                <p><strong>(Default)</strong></p>
+                                            {% endif %}
+                                        </div>
+                                        <a href="{% url 'edit_address' address.id %}" class="uf-ct-01-btn-primary ml-auto">Edit</a>
+
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>No addresses found. Add one from your profile edit page.</p>
+                        {% endif %}
+
+                        <!-- Add New Address Button -->
+                        <p><strong> Add New Addres </strong><a href="{% url 'add_address' %}" class=""><img src="{% static 'extt/images/add.png' %}" alt="" style="width: 30px; height: auto;"></a></p><br>
+                        
+                        <p><strong>Password:</strong> 
+                            <a href="{% url 'change_password' %}" class="checkout-btn">Change Password</a>
+                        </p>
+  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+</body>
+</html>
+
+
+
+

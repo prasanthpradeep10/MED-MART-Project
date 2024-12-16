@@ -1,0 +1,27 @@
+<!-- update_email.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Email</title>
+    <link rel="stylesheet" href="{% static 'extt/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <!-- Your navigation here -->
+        </nav>
+    </header>
+
+    <section class="container">
+        <h2>Update Email</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Update Email</button>
+        </form>
+    </section>
+</body>
+</html>

@@ -1,0 +1,270 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>MedMart</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+  <!-- font awesome style -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="{% static 'extt/css/bootstrap.css' %}" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700|Roboto:400,700&display=swap" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'extt/css/style.css' %}" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="{% static 'extt/css/responsive.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'extt/css/order_details.css' %}">
+  <link rel="stylesheet" href="{% static 'extt/css/sections.css' %}">
+  <style>
+            /* Button Styles */
+            .checkout-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    
+        .checkout-btn:hover {
+            background-color: #45a049;
+        }
+    
+        .submit-button {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 20px;
+            background-color: #28a745; /* Green background */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+    
+        .submit-button:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+    
+        /* Product Image */
+        .product-image {
+            display: block;
+            margin: 0 auto 20px;
+            width: 250px; /* Set desired width */
+            height: auto; /* Maintain aspect ratio */
+        }
+
+        
+        /* Centering the Rating Section */
+.rating-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0; /* Adjust top and bottom padding as needed */
+}
+
+/* Rating Section */
+:root {
+    --stars: 5;
+    --star-size: 40px;
+    --star-spacing: 2px;
+    --star-on-color: #F9DF4A;
+    --star-off-color: #CCCCCC;
+}
+
+.rating {
+    width: calc(var(--star-size) * var(--stars) + var(--star-spacing) * (var(--stars) - 1));
+    height: var(--star-size);
+    border: 1px solid #CCCCCC;
+    background: #F9F9F9;
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 10px; /* Optional: add padding if needed for spacing */
+    box-sizing: content-box; /* Ensures padding doesn’t expand total width */
+}
+
+.rating label {
+    position: relative;
+    width: var(--star-size);
+    height: var(--star-size);
+    cursor: pointer;
+    padding-right: var(--star-spacing);
+}
+
+.rating label:before {
+    content: "\2605";
+    font-size: calc(var(--star-size) + 2px);
+    color: var(--star-off-color);
+    line-height: 1;
+}
+
+.rating input {
+    display: none;
+}
+
+.rating input:checked ~ label:before,
+.rating label:hover:before,
+.rating label:hover ~ label:before {
+    color: var(--star-on-color);
+}
+  </style>
+</head>
+
+<body>
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container">
+        <div class="top_contact-container">
+          <div class="tel_container">
+          
+          </div>
+         
+        </div>
+      </div>
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
+          <a class="navbar-brand" href="{% url 'user_home' %}">
+            <img src="{% static 'extt/images/logo2.gif' %}" alt="">
+            <span>
+              MEDMART
+            </span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
+              <ul class="navbar-nav  ">
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'user_home' %}"> Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'user_profile' username=request.user.username %}">Profile </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'user_category' %}"> category</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'cart' %}">
+                      <img src="{% static 'extt/images/cart.png' %}" alt="Cart" style="width: 23px; height: auto;">
+                      Cart
+                      {% if cart_items_count > 0 %}
+                          <span class="badge badge-pill badge-danger">{{ cart_items_count }}</span>
+                      {% endif %}
+                  </a>
+              </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'order_history' %}"><img src="{% static 'extt/images/orders.png' %}" alt="Logo" style="width: 23px; height: auto;">Orders</a>
+              </li>
+              </ul>
+              <form class="form-inline" method="GET" action="{% url 'search' %}">
+                <input type="search" name="query" id="search-input" placeholder="Search" class="form-control">
+                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit"></button>
+            </form>
+            
+            <!-- Suggestions will appear here -->
+            <div id="suggestions-box"></div> 
+            
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+                $(document).ready(function() {
+                    $('#search-input').on('keyup', function() {
+                        let query = $(this).val();
+            
+                        if (query.length > 0) {
+                            $.ajax({
+                                url: '{% url "suggestion" %}',
+                                method: 'GET',
+                                data: {
+                                    'query': query
+                                },
+                                success: function(data) {
+                                    $('#suggestions-box').html(data);
+                                }
+                            });
+                        } else {
+                            $('#suggestions-box').html('');
+                        }
+                    });
+            
+                    // Hide suggestions when clicking outside
+                    $(document).click(function(e) {
+                        if (!$(e.target).closest('#search-input, #suggestions-box').length) {
+                            $('#suggestions-box').html('');
+                        }
+                    });
+                });
+            </script>
+            
+
+            
+
+            <div class="login_btn-contanier ml-0 ml-lg-5">
+                <a class="nav-link" href="{% url 'logout' %}">
+                  <img src="{% static 'extt/images/user.png' %}" alt="">
+                  <span>
+                    Logout
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </nav>
+      </div>
+    </header><br>    
+
+
+
+    <h2><center>Rate</center></h2><br>
+    <section class="categories">
+        <div class=" category" id="category1">
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+    <h2><center>{{ product.name }}</center></h2>
+    <form method="post" action="{% url 'rate_product' order.id product.id %}">
+        {% csrf_token %}
+        <div class="rating-container">
+            <div class="rating">
+                <!-- Add input and label elements here for each star rating -->
+                <input type="radio" id="star5" name="rating" value="5"><label for="star5"></label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4"></label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3"></label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2"></label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1"></label>
+            </div>
+        </div>
+        <button type="submit" class="submit-button">Submit Rating</button>
+    </form>
+        </div>
+    </section>
+    
+</body>
+</html>
+
+
+
